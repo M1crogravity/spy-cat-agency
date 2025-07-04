@@ -1,0 +1,62 @@
+package memory
+
+import (
+	"context"
+
+	"github.com/m1crogravity/spy-cat-agency/internal/model"
+	"github.com/m1crogravity/spy-cat-agency/internal/storage"
+)
+
+type SpyCatsRepository struct {
+	spyCats map[int64]*model.SpyCat
+	lastId  int64
+}
+
+func NewSpyCatRepository() *SpyCatsRepository {
+	return &SpyCatsRepository{
+		spyCats: make(map[int64]*model.SpyCat),
+	}
+}
+
+func (r *SpyCatsRepository) Create(ctx context.Context, spyCat *model.SpyCat) error {
+	id := r.lastId + 1
+	spyCat.Id = id
+	r.spyCats[id] = spyCat
+	r.lastId = id
+
+	return nil
+}
+
+func (r *SpyCatsRepository) FindById(ctx context.Context, id int64) (*model.SpyCat, error) {
+	spyCat, ok := r.spyCats[id]
+	if !ok {
+		return nil, storage.ErrorModelNotFound
+	}
+
+	return spyCat, nil
+}
+
+func (r *SpyCatsRepository) Delete(ctx context.Context, id int64) error {
+	delete(r.spyCats, id)
+	return nil
+}
+
+func (r *SpyCatsRepository) Save(ctx context.Context, spyCat model.SpyCat) error {
+	spyCatToUpdate, ok := r.spyCats[spyCat.Id]
+	if !ok {
+		return storage.ErrorModelNotFound
+	}
+
+	spyCatToUpdate.Salary = spyCat.Salary
+
+	return nil
+}
+
+func (r *SpyCatsRepository) FindAll(ctx context.Context) ([]*model.SpyCat, error) {
+	var spyCats []*model.SpyCat
+	for _, spyCat := range r.spyCats {
+		spyCats = append(spyCats, spyCat)
+	}
+
+	return spyCats, nil
+}
