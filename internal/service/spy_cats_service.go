@@ -15,17 +15,17 @@ type SpyCatsRepository interface {
 }
 
 type SpyCatService struct {
-	repo SpyCatsRepository
+	repository SpyCatsRepository
 }
 
 func NewSpyCatService(repo SpyCatsRepository) *SpyCatService {
 	return &SpyCatService{
-		repo: repo,
+		repository: repo,
 	}
 }
 
 func (s *SpyCatService) Create(ctx context.Context, spyCat *model.SpyCat) error {
-	err := s.repo.Create(ctx, spyCat)
+	err := s.repository.Create(ctx, spyCat)
 	if err != nil {
 		return err
 	}
@@ -34,24 +34,24 @@ func (s *SpyCatService) Create(ctx context.Context, spyCat *model.SpyCat) error 
 }
 
 func (s *SpyCatService) UpdateSalary(ctx context.Context, id int64, salary float64) error {
-	spyCat, err := s.repo.FindById(ctx, id)
+	spyCat, err := s.repository.FindById(ctx, id)
 	if err != nil {
 		return err
 	}
 
 	spyCat.Salary = salary
 
-	return s.repo.Save(ctx, *spyCat)
+	return s.repository.Save(ctx, *spyCat)
 }
 
 func (s *SpyCatService) GetAll(ctx context.Context) ([]*model.SpyCat, error) {
-	return s.repo.FindAll(ctx)
+	return s.repository.FindAll(ctx)
 }
 
 func (s *SpyCatService) GetById(ctx context.Context, id int64) (*model.SpyCat, error) {
-	return s.repo.FindById(ctx, id)
+	return s.repository.FindById(ctx, id)
 }
 
 func (s *SpyCatService) Remove(ctx context.Context, id int64) error {
-	return s.repo.Delete(ctx, id)
+	return s.repository.Delete(ctx, id)
 }

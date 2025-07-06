@@ -9,7 +9,7 @@ import (
 	"github.com/m1crogravity/spy-cat-agency/internal/storage/memory"
 )
 
-func TestCreate(t *testing.T) {
+func TestSpyCatsCreate(t *testing.T) {
 	repo := memory.NewSpyCatRepository()
 	service := NewSpyCatService(repo)
 	spyCat := &model.SpyCat{
@@ -27,7 +27,7 @@ func TestCreate(t *testing.T) {
 	}
 }
 
-func TestGetById(t *testing.T) {
+func TestSpyCatsGetById(t *testing.T) {
 	repo := memory.NewSpyCatRepository()
 	service := NewSpyCatService(repo)
 	spyCat := &model.SpyCat{
@@ -53,7 +53,7 @@ func TestGetById(t *testing.T) {
 	}
 }
 
-func TestRemove(t *testing.T) {
+func TestSpyCatsRemove(t *testing.T) {
 	repo := memory.NewSpyCatRepository()
 	service := NewSpyCatService(repo)
 	spyCat := &model.SpyCat{
@@ -72,16 +72,13 @@ func TestRemove(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	gotSpyCat, err := service.GetById(t.Context(), spyCat.Id)
+	err = service.Remove(t.Context(), spyCat.Id)
 	if !errors.Is(err, storage.ErrorModelNotFound) {
-		t.Fatal(err)
-	}
-	if gotSpyCat != nil {
-		t.Fatal("Spy cat was not removed")
+		t.Fatal("Expected error to be storage.ErrorModelNotFound")
 	}
 }
 
-func TestUpdateSalary(t *testing.T) {
+func TestSpyCatsUpdateSalary(t *testing.T) {
 	repo := memory.NewSpyCatRepository()
 	service := NewSpyCatService(repo)
 	spyCat := &model.SpyCat{
@@ -109,7 +106,7 @@ func TestUpdateSalary(t *testing.T) {
 	}
 }
 
-func TestGetAll(t *testing.T) {
+func TestSpyCatsGetAll(t *testing.T) {
 	repo := memory.NewSpyCatRepository()
 	service := NewSpyCatService(repo)
 	spyCat1 := &model.SpyCat{
@@ -140,7 +137,14 @@ func TestGetAll(t *testing.T) {
 	if len(spyCats) != 2 {
 		t.Fatal("Spy cats were not found")
 	}
-	if spyCats[0].Id != spyCat1.Id || spyCats[1].Id != spyCat2.Id {
+	ids := map[int64]struct{}{
+		spyCat1.Id: {},
+		spyCat2.Id: {},
+	}
+	for _, spyCat := range spyCats {
+		delete(ids, spyCat.Id)
+	}
+	if len(ids) != 0 {
 		t.Fatal("Spy cats were not found")
 	}
 }

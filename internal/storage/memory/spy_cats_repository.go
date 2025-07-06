@@ -23,7 +23,6 @@ func (r *SpyCatsRepository) Create(ctx context.Context, spyCat *model.SpyCat) er
 	spyCat.Id = id
 	r.spyCats[id] = spyCat
 	r.lastId = id
-
 	return nil
 }
 
@@ -37,6 +36,10 @@ func (r *SpyCatsRepository) FindById(ctx context.Context, id int64) (*model.SpyC
 }
 
 func (r *SpyCatsRepository) Delete(ctx context.Context, id int64) error {
+	if _, ok := r.spyCats[id]; !ok {
+		return storage.ErrorModelNotFound
+	}
+
 	delete(r.spyCats, id)
 	return nil
 }
