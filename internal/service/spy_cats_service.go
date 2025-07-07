@@ -33,15 +33,15 @@ func (s *SpyCatService) Create(ctx context.Context, spyCat *model.SpyCat) error 
 	return nil
 }
 
-func (s *SpyCatService) UpdateSalary(ctx context.Context, id int64, salary float64) error {
+func (s *SpyCatService) UpdateSalary(ctx context.Context, id int64, salary float64) (*model.SpyCat, error) {
 	spyCat, err := s.repository.FindById(ctx, id)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	spyCat.Salary = salary
 
-	return s.repository.Save(ctx, *spyCat)
+	return spyCat, s.repository.Save(ctx, *spyCat)
 }
 
 func (s *SpyCatService) GetAll(ctx context.Context) ([]*model.SpyCat, error) {

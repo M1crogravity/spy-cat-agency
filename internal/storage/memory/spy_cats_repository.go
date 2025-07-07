@@ -56,7 +56,7 @@ func (r *SpyCatsRepository) Save(ctx context.Context, spyCat model.SpyCat) error
 }
 
 func (r *SpyCatsRepository) FindAll(ctx context.Context) ([]*model.SpyCat, error) {
-	var spyCats []*model.SpyCat
+	spyCats := make([]*model.SpyCat, 0, len(r.spyCats))
 	for _, spyCat := range r.spyCats {
 		spyCats = append(spyCats, spyCat)
 	}

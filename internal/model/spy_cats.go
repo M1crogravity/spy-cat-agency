@@ -1,9 +1,9 @@
 package model
 
 type SpyCat struct {
-	Id                int64
-	Name              string
-	YearsOfExperience uint8
-	Breed             string
-	Salary            float64
+	Id                int64   `json:"id"`
+	Name              string  `json:"name"`
+	YearsOfExperience uint    `json:"years_of_experience"`
+	Breed             string  `json:"breed"`
+	Salary            float64 `json:"salary"`
 }

@@ -93,7 +93,7 @@ func TestSpyCatsUpdateSalary(t *testing.T) {
 	}
 
 	newSalary := 200.0
-	err = service.UpdateSalary(t.Context(), spyCat.Id, newSalary)
+	_, err = service.UpdateSalary(t.Context(), spyCat.Id, newSalary)
 	if err != nil {
 		t.Fatal(err)
 	}
