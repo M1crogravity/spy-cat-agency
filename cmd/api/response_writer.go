@@ -7,16 +7,24 @@ import (
 
 type responseWriter struct {
 	http.ResponseWriter
-	statusCode int
-	body       bytes.Buffer
+	statusCode    int
+	body          bytes.Buffer
+	headerWritten bool
 }
 
 func (rw *responseWriter) WriteHeader(code int) {
-	rw.statusCode = code
-	rw.ResponseWriter.WriteHeader(code)
+	if !rw.headerWritten {
+		rw.statusCode = code
+		rw.headerWritten = true
+		rw.ResponseWriter.WriteHeader(code)
+	}
 }
 
 func (rw *responseWriter) Write(b []byte) (int, error) {
+	if !rw.headerWritten {
+		rw.statusCode = http.StatusOK
+		rw.headerWritten = true
+	}
 	rw.body.Write(b)
 	return rw.ResponseWriter.Write(b)
 }

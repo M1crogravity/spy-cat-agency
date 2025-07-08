@@ -35,6 +35,7 @@ type MissionsRepository interface {
 	SaveTarget(context.Context, *model.Target) error
 	DeleteTarget(context.Context, int64) error
 	FindActiveMission(context.Context, int64) (*model.Mission, error)
+	FindAll(context.Context) ([]*model.Mission, error)
 }
 
 type MissionsService struct {
@@ -75,57 +76,66 @@ func (s *MissionsService) RemoveMission(ctx context.Context, id int64) error {
 	return s.repository.DeleteMission(ctx, id)
 }
 
-func (s *MissionsService) CompleteMission(ctx context.Context, mission *model.Mission, spyCat *model.SpyCat) error {
-	if mission.IsCompleted() {
-		return nil
+func (s *MissionsService) CompleteMission(ctx context.Context, id int64) (*model.Mission, error) {
+	mission, err := s.repository.FindMissionById(ctx, id)
+	if err != nil {
+		return nil, err
 	}
 
-	if !mission.IsAssignedTo(spyCat) {
-		return ErrAccessDenied
+	if mission.IsCompleted() {
+		return mission, nil
 	}
 
 	mission.Complete()
 
-	return s.repository.SaveMission(ctx, mission)
+	return mission, s.repository.SaveMission(ctx, mission)
 }
 
-func (s *MissionsService) CompleteTarget(ctx context.Context, target *model.Target, spyCat *model.SpyCat) error {
-	if target.IsCompleted() {
-		return nil
-	}
-	if target.MissionId == 0 {
-		return ErrNoMissionTarget
-	}
-
-	mission, err := s.GetMissionByID(ctx, target.MissionId)
-	if err != nil {
-		return err
-	}
+func (s *MissionsService) CompleteTarget(ctx context.Context, mission *model.Mission, targetId int64, spyCat *model.SpyCat) error {
 	if !mission.IsAssignedTo(spyCat) {
 		return ErrAccessDenied
+	}
+
+	target := mission.GetTarget(targetId)
+	if target == nil {
+		return storage.ErrorModelNotFound
+	}
+
+	if target.IsCompleted() {
+		return nil
 	}
 
 	target.Complete()
 
-	return s.repository.SaveTarget(ctx, target)
-}
-
-func (s *MissionsService) UpdateNotes(ctx context.Context, target *model.Target, notes string, spyCat *model.SpyCat) error {
-	if target.IsCompleted() {
-		return ErrOperationNotAllowedOnCompleted
-	}
-	if target.MissionId == 0 {
-		return ErrNoMissionTarget
-	}
-
-	mission, err := s.GetMissionByID(ctx, target.MissionId)
+	err := s.repository.SaveTarget(ctx, target)
 	if err != nil {
 		return err
 	}
+
+	if mission.IsAllTargetsComplete() {
+		_, err = s.CompleteMission(ctx, mission.Id)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (s *MissionsService) UpdateNotes(ctx context.Context, mission *model.Mission, targetId int64, notes string, spyCat *model.SpyCat) error {
 	if !mission.IsAssignedTo(spyCat) {
 		return ErrAccessDenied
 	}
 	if mission.IsCompleted() {
+		return ErrOperationNotAllowedOnCompleted
+	}
+
+	target := mission.GetTarget(targetId)
+	if target == nil {
+		return storage.ErrorModelNotFound
+	}
+
+	if target.IsCompleted() {
 		return ErrOperationNotAllowedOnCompleted
 	}
 
@@ -134,14 +144,7 @@ func (s *MissionsService) UpdateNotes(ctx context.Context, target *model.Target,
 }
 
 func (s *MissionsService) RemoveTarget(ctx context.Context, mission *model.Mission, targetId int64) error {
-	var found *model.Target
-	for _, target := range mission.Targets {
-		if target.Id != targetId {
-			continue
-		}
-		found = target
-		break
-	}
+	found := mission.GetTarget(targetId)
 	if found == nil {
 		return ErrMissionTargetMissmatch
 	}
@@ -158,6 +161,7 @@ func (s *MissionsService) AddTarget(ctx context.Context, mission *model.Mission,
 	}
 
 	target.MissionId = mission.Id
+	target.State = mission.State
 	mission.Targets = append(mission.Targets, target)
 	return s.repository.CreateTarget(ctx, target)
 }
@@ -181,5 +185,8 @@ func (s *MissionsService) AssignMission(ctx context.Context, mission *model.Miss
 	mission.AssignedCatId = spyCat.Id
 	mission.State = model.InProgress
 	return s.repository.SaveMission(ctx, mission)
+}
 
+func (s *MissionsService) GetAll(ctx context.Context) ([]*model.Mission, error) {
+	return s.repository.FindAll(ctx)
 }

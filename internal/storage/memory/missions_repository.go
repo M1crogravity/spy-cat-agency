@@ -2,6 +2,8 @@ package memory
 
 import (
 	"context"
+	"maps"
+	"slices"
 
 	"github.com/m1crogravity/spy-cat-agency/internal/model"
 	"github.com/m1crogravity/spy-cat-agency/internal/storage"
@@ -121,4 +123,8 @@ func (r *MissionsRepository) FindActiveMission(ctx context.Context, spyCatId int
 	}
 
 	return nil, storage.ErrorModelNotFound
+}
+
+func (r *MissionsRepository) FindAll(ctx context.Context) ([]*model.Mission, error) {
+	return slices.Collect(maps.Values(r.missions)), nil
 }

@@ -23,7 +23,7 @@ func (app *application) listSpyCatHandler(w http.ResponseWriter, r *http.Request
 }
 
 func (app *application) getSpyCatHandler(w http.ResponseWriter, r *http.Request) {
-	id, err := app.readIDParam(r)
+	id, err := app.readIDParam(r, "id")
 	if err != nil {
 		app.notFoundResponse(w, r)
 		return
@@ -79,7 +79,7 @@ func (app *application) createSpyCatHandler(w http.ResponseWriter, r *http.Reque
 }
 
 func (app *application) deleteSpyCatHandler(w http.ResponseWriter, r *http.Request) {
-	id, err := app.readIDParam(r)
+	id, err := app.readIDParam(r, "id")
 	if err != nil {
 		app.notFoundResponse(w, r)
 		return
@@ -102,7 +102,7 @@ func (app *application) deleteSpyCatHandler(w http.ResponseWriter, r *http.Reque
 }
 
 func (app *application) updateSpyCatHandler(w http.ResponseWriter, r *http.Request) {
-	id, err := app.readIDParam(r)
+	id, err := app.readIDParam(r, "id")
 	if err != nil {
 		app.notFoundResponse(w, r)
 		return

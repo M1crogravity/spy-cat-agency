@@ -6,6 +6,8 @@ import (
 	"io"
 	"net/http"
 	"time"
+
+	"github.com/m1crogravity/spy-cat-agency/internal/model"
 )
 
 func (app *application) recoverPanic(next http.Handler) http.Handler {
@@ -47,5 +49,20 @@ func (app *application) logRequestResponse(next http.Handler) http.Handler {
 			"body", rw.body.String(),
 			"took", time.Since(received),
 		)
+	})
+}
+
+func (app *application) authenticate(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Vary", "Authorization")
+
+		authorizationHeader := r.Header.Get("Authorization")
+		if authorizationHeader == "" {
+			r = app.contextSetSpyCat(r, model.AnonymousSpyCat)
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		next.ServeHTTP(w, r)
 	})
 }

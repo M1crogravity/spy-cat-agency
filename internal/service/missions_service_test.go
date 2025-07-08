@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/m1crogravity/spy-cat-agency/internal/model"
+	"github.com/m1crogravity/spy-cat-agency/internal/storage"
 	"github.com/m1crogravity/spy-cat-agency/internal/storage/memory"
 )
 
@@ -126,34 +127,14 @@ func TestCompleteMission(t *testing.T) {
 		{
 			name: "happy path",
 			mission: &model.Mission{
-				State:         model.Created,
-				AssignedCatId: 1,
+				State: model.Created,
 				Targets: []*model.Target{
 					{
 						State: model.Created,
 					},
 				},
-			},
-			spyCat: &model.SpyCat{
-				Id: 1,
 			},
 			errCheck: nil,
-		},
-		{
-			name: "attempt to complete not own mission",
-			mission: &model.Mission{
-				State:         model.Created,
-				AssignedCatId: 1,
-				Targets: []*model.Target{
-					{
-						State: model.Created,
-					},
-				},
-			},
-			spyCat: &model.SpyCat{
-				Id: 2,
-			},
-			errCheck: ErrAccessDenied,
 		},
 	}
 	for _, tt := range tc {
@@ -164,14 +145,14 @@ func TestCompleteMission(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			err = service.CompleteMission(t.Context(), tt.mission, tt.spyCat)
+			mission, err := service.CompleteMission(t.Context(), tt.mission.Id)
 			if err != tt.errCheck {
 				t.Fatal(err)
 			}
 			if err != nil {
 				return
 			}
-			if !tt.mission.IsCompleted() {
+			if !mission.IsCompleted() {
 				t.Fatal("mission is not completed")
 			}
 		})
@@ -229,7 +210,7 @@ func TestCompleteTarget(t *testing.T) {
 				return &model.Target{}
 			},
 			spyCat:   &model.SpyCat{},
-			errCheck: ErrNoMissionTarget,
+			errCheck: storage.ErrorModelNotFound,
 		},
 		{
 			name: "wrong spy cat",
@@ -259,7 +240,7 @@ func TestCompleteTarget(t *testing.T) {
 				t.Fatal(err)
 			}
 			target := tt.target(tt.mission)
-			err = service.CompleteTarget(t.Context(), target, tt.spyCat)
+			err = service.CompleteTarget(t.Context(), tt.mission, target.Id, tt.spyCat)
 			if err != tt.errCheck {
 				t.Fatal(err)
 			}
@@ -347,7 +328,7 @@ func TestUpdateTargetNotes(t *testing.T) {
 				Id: 1,
 			},
 			notes:    "new notes",
-			errCheck: ErrNoMissionTarget,
+			errCheck: storage.ErrorModelNotFound,
 		},
 		{
 			name: "wrong spy cat",
@@ -403,7 +384,7 @@ func TestUpdateTargetNotes(t *testing.T) {
 				t.Fatal(err)
 			}
 			target := tt.target(tt.mission)
-			err = service.UpdateNotes(t.Context(), target, tt.notes, tt.spyCat)
+			err = service.UpdateNotes(t.Context(), tt.mission, target.Id, tt.notes, tt.spyCat)
 			if err != tt.errCheck {
 				t.Fatal(err)
 			}
