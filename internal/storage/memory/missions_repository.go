@@ -11,15 +11,12 @@ import (
 
 type MissionsRepository struct {
 	missions      map[int64]*model.Mission
-	targets       map[int64]*model.Target
 	lastMissionId int64
-	lastTargetId  int64
 }
 
 func NewMissionsRepository() *MissionsRepository {
 	return &MissionsRepository{
 		missions: make(map[int64]*model.Mission),
-		targets:  make(map[int64]*model.Target),
 	}
 }
 
@@ -29,8 +26,7 @@ func (r *MissionsRepository) CreateMission(ctx context.Context, mission *model.M
 	mission.Id = missionId
 
 	for _, target := range mission.Targets {
-		target.MissionId = missionId
-		err := r.CreateTarget(ctx, target)
+		err := r.CreateTarget(ctx, mission, target)
 		if err != nil {
 			return err
 		}
@@ -51,12 +47,7 @@ func (r *MissionsRepository) DeleteMission(ctx context.Context, id int64) error 
 	if _, ok := r.missions[id]; !ok {
 		return storage.ErrorModelNotFound
 	}
-	for targetId, target := range r.targets {
-		if target.MissionId != id {
-			continue
-		}
-		delete(r.targets, targetId)
-	}
+
 	delete(r.missions, id)
 	return nil
 }
@@ -66,52 +57,36 @@ func (r *MissionsRepository) SaveMission(ctx context.Context, mission *model.Mis
 		return storage.ErrorModelNotFound
 	}
 	for _, target := range mission.Targets {
-		target.MissionId = mission.Id
-		if _, ok := r.targets[target.Id]; !ok {
+		if target.Id != 0 {
+			target.MissionId = mission.Id
 			r.SaveTarget(ctx, target)
 			continue
 		}
-		r.CreateTarget(ctx, target)
+		r.CreateTarget(ctx, mission, target)
 	}
 	r.missions[mission.Id] = mission
 	return nil
 }
 
 func (r *MissionsRepository) SaveTarget(ctx context.Context, target *model.Target) error {
-	if _, ok := r.targets[target.Id]; !ok {
-		return storage.ErrorModelNotFound
-	}
-	r.targets[target.Id] = target
 	return nil
 }
 
-func (r *MissionsRepository) CreateTarget(ctx context.Context, target *model.Target) error {
-	targetId := r.lastTargetId + 1
-	r.lastTargetId = targetId
-	target.Id = targetId
-	r.targets[targetId] = target
+func (r *MissionsRepository) CreateTarget(ctx context.Context, mission *model.Mission, target *model.Target) error {
+	target.MissionId = mission.Id
+	target.Id = int64(len(mission.Targets) + 1)
 	return nil
 }
 
-func (r *MissionsRepository) DeleteTarget(ctx context.Context, targetId int64) error {
-	target, ok := r.targets[targetId]
-	if !ok {
-		return storage.ErrorModelNotFound
-	}
-	mission, ok := r.missions[target.MissionId]
-	if !ok {
-		return storage.ErrorModelNotFound
-	}
-
+func (r *MissionsRepository) DeleteTarget(ctx context.Context, mission *model.Mission, targetId int64) error {
 	var targetIndex int
 	for i, missionTarget := range mission.Targets {
-		if missionTarget.Id != target.Id {
+		if missionTarget.Id != targetId {
 			continue
 		}
 		targetIndex = i
 	}
 	mission.Targets = append(mission.Targets[:targetIndex], mission.Targets[targetIndex+1:]...)
-	delete(r.targets, target.Id)
 	return nil
 }
 

@@ -28,12 +28,12 @@ var (
 
 type MissionsRepository interface {
 	CreateMission(context.Context, *model.Mission) error
-	CreateTarget(context.Context, *model.Target) error
+	CreateTarget(context.Context, *model.Mission, *model.Target) error
 	FindMissionById(context.Context, int64) (*model.Mission, error)
 	DeleteMission(context.Context, int64) error
 	SaveMission(context.Context, *model.Mission) error
 	SaveTarget(context.Context, *model.Target) error
-	DeleteTarget(context.Context, int64) error
+	DeleteTarget(context.Context, *model.Mission, int64) error
 	FindActiveMission(context.Context, int64) (*model.Mission, error)
 	FindAll(context.Context) ([]*model.Mission, error)
 }
@@ -152,7 +152,7 @@ func (s *MissionsService) RemoveTarget(ctx context.Context, mission *model.Missi
 		return ErrOperationNotAllowedOnCompleted
 	}
 
-	return s.repository.DeleteTarget(ctx, targetId)
+	return s.repository.DeleteTarget(ctx, mission, targetId)
 }
 
 func (s *MissionsService) AddTarget(ctx context.Context, mission *model.Mission, target *model.Target) error {
@@ -160,10 +160,8 @@ func (s *MissionsService) AddTarget(ctx context.Context, mission *model.Mission,
 		return ErrOperationNotAllowedOnCompleted
 	}
 
-	target.MissionId = mission.Id
 	target.State = mission.State
-	mission.Targets = append(mission.Targets, target)
-	return s.repository.CreateTarget(ctx, target)
+	return s.repository.CreateTarget(ctx, mission, target)
 }
 
 func (s *MissionsService) AssignMission(ctx context.Context, mission *model.Mission, spyCat *model.SpyCat) error {
