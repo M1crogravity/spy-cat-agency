@@ -11,7 +11,8 @@ import (
 
 func TestSpyCatsCreate(t *testing.T) {
 	repo := memory.NewSpyCatRepository()
-	service := NewSpyCatService(repo)
+	breedRepo := memory.NewBreedsRepository("breed1", "pokemon")
+	service := NewSpyCatService(repo, breedRepo)
 	spyCat := &model.SpyCat{
 		Name:              "Pickachu",
 		YearsOfExperience: 2,
@@ -33,7 +34,8 @@ func TestSpyCatsCreate(t *testing.T) {
 
 func TestSpyCatsGetById(t *testing.T) {
 	repo := memory.NewSpyCatRepository()
-	service := NewSpyCatService(repo)
+	breedRepo := memory.NewBreedsRepository("breed1", "pokemon")
+	service := NewSpyCatService(repo, breedRepo)
 	spyCat := &model.SpyCat{
 		Name:              "Pickachu",
 		YearsOfExperience: 2,
@@ -59,7 +61,8 @@ func TestSpyCatsGetById(t *testing.T) {
 
 func TestSpyCatsRemove(t *testing.T) {
 	repo := memory.NewSpyCatRepository()
-	service := NewSpyCatService(repo)
+	breedRepo := memory.NewBreedsRepository("breed1", "pokemon")
+	service := NewSpyCatService(repo, breedRepo)
 	spyCat := &model.SpyCat{
 		Name:              "Pickachu",
 		YearsOfExperience: 2,
@@ -84,7 +87,8 @@ func TestSpyCatsRemove(t *testing.T) {
 
 func TestSpyCatsUpdateSalary(t *testing.T) {
 	repo := memory.NewSpyCatRepository()
-	service := NewSpyCatService(repo)
+	breedRepo := memory.NewBreedsRepository("breed1", "pokemon")
+	service := NewSpyCatService(repo, breedRepo)
 	spyCat := &model.SpyCat{
 		Name:              "Pickachu",
 		YearsOfExperience: 2,
@@ -112,7 +116,8 @@ func TestSpyCatsUpdateSalary(t *testing.T) {
 
 func TestSpyCatsGetAll(t *testing.T) {
 	repo := memory.NewSpyCatRepository()
-	service := NewSpyCatService(repo)
+	breedRepo := memory.NewBreedsRepository("breed1", "pokemon")
+	service := NewSpyCatService(repo, breedRepo)
 	spyCat1 := &model.SpyCat{
 		Name:              "Pickachu",
 		YearsOfExperience: 2,

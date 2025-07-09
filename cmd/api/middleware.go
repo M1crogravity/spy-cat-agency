@@ -33,7 +33,7 @@ func (app *application) logRequestResponse(next http.Handler) http.Handler {
 		bodyBytes, _ := io.ReadAll(r.Body)
 		r.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
 
-		app.logger.Info("request:",
+		app.logger.Info("<-request:",
 			"method", r.Method,
 			"url", r.URL.String(),
 			"ip", r.RemoteAddr,
@@ -48,7 +48,7 @@ func (app *application) logRequestResponse(next http.Handler) http.Handler {
 
 		next.ServeHTTP(rw, r)
 
-		app.logger.Info("response:",
+		app.logger.Info("->response:",
 			"code", rw.statusCode,
 			"body", rw.body.String(),
 			"took", time.Since(received),

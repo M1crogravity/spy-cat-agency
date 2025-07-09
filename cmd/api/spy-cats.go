@@ -75,8 +75,14 @@ func (app *application) createSpyCatHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
+	breeds, err := app.spyCatsService.GetBreeds(r.Context())
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+
 	v := validator.New()
-	if model.ValidateSpyCat(v, spyCat); !v.Valid() {
+	if model.ValidateSpyCat(v, spyCat, breeds); !v.Valid() {
 		app.failedValidationResponse(w, r, v.Errors)
 		return
 	}

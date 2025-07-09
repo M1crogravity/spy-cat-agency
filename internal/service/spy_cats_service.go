@@ -15,13 +15,19 @@ type SpyCatsRepository interface {
 	FindByName(context.Context, string) (*model.SpyCat, error)
 }
 
-type SpyCatService struct {
-	repository SpyCatsRepository
+type BreedRepository interface {
+	FindAll(context.Context) ([]string, error)
 }
 
-func NewSpyCatService(repo SpyCatsRepository) *SpyCatService {
+type SpyCatService struct {
+	repository      SpyCatsRepository
+	breedRepository BreedRepository
+}
+
+func NewSpyCatService(repo SpyCatsRepository, breedRepo BreedRepository) *SpyCatService {
 	return &SpyCatService{
-		repository: repo,
+		repository:      repo,
+		breedRepository: breedRepo,
 	}
 }
 
@@ -54,4 +60,8 @@ func (s *SpyCatService) Remove(ctx context.Context, id int64) error {
 
 func (s *SpyCatService) GetByName(ctx context.Context, name string) (*model.SpyCat, error) {
 	return s.repository.FindByName(ctx, name)
+}
+
+func (s *SpyCatService) GetBreeds(ctx context.Context) ([]string, error) {
+	return s.breedRepository.FindAll(ctx)
 }

@@ -19,7 +19,7 @@ func (sc *SpyCat) IsAnonymous() bool {
 	return sc == AnonymousSpyCat
 }
 
-func ValidateSpyCat(v *validator.Validator, spyCat *SpyCat) {
+func ValidateSpyCat(v *validator.Validator, spyCat *SpyCat, breeds []string) {
 	v.Check(spyCat.Name != "", "name", "must be provided")
 	v.Check(len(spyCat.Name) <= 500, "name", "must be more than 500 bytes long")
 
@@ -30,4 +30,6 @@ func ValidateSpyCat(v *validator.Validator, spyCat *SpyCat) {
 	if spyCat.Password.hash == nil {
 		panic("missing password hash for user")
 	}
+
+	v.Check(validator.PermittedValue(spyCat.Breed, breeds...), "breed", "invalid breed")
 }
