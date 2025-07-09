@@ -12,6 +12,7 @@ type SpyCatsRepository interface {
 	FindAll(context.Context) ([]*model.SpyCat, error)
 	Save(context.Context, model.SpyCat) error
 	Delete(context.Context, int64) error
+	FindByName(context.Context, string) (*model.SpyCat, error)
 }
 
 type SpyCatService struct {
@@ -25,12 +26,7 @@ func NewSpyCatService(repo SpyCatsRepository) *SpyCatService {
 }
 
 func (s *SpyCatService) Create(ctx context.Context, spyCat *model.SpyCat) error {
-	err := s.repository.Create(ctx, spyCat)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return s.repository.Create(ctx, spyCat)
 }
 
 func (s *SpyCatService) UpdateSalary(ctx context.Context, id int64, salary float64) (*model.SpyCat, error) {
@@ -54,4 +50,8 @@ func (s *SpyCatService) GetById(ctx context.Context, id int64) (*model.SpyCat, e
 
 func (s *SpyCatService) Remove(ctx context.Context, id int64) error {
 	return s.repository.Delete(ctx, id)
+}
+
+func (s *SpyCatService) GetByName(ctx context.Context, name string) (*model.SpyCat, error) {
+	return s.repository.FindByName(ctx, name)
 }

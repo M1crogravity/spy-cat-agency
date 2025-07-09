@@ -20,6 +20,8 @@ type application struct {
 	wg              sync.WaitGroup
 	spyCatsService  *service.SpyCatService
 	missionsService *service.MissionsService
+	tokensService   *service.TokenService
+	agentsService   *service.AgentsService
 }
 
 func main() {
@@ -32,12 +34,18 @@ func main() {
 	spyCatsService := service.NewSpyCatService(spyCatsRepo)
 	missionRepo := memory.NewMissionsRepository()
 	missionsService := service.NewMissionsService(missionRepo)
+	tokensRepo := memory.NewTokensRepository()
+	tokensService := service.NewTokensService(tokensRepo)
+	agentsRepository := memory.NewAgentsRepository()
+	agentsService := service.NewAgentsService(agentsRepository)
 
 	app := &application{
 		config:          cfg,
 		logger:          logger,
 		spyCatsService:  spyCatsService,
 		missionsService: missionsService,
+		tokensService:   tokensService,
+		agentsService:   agentsService,
 	}
 
 	err := app.serve()

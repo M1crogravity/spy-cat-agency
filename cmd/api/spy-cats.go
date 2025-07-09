@@ -6,6 +6,7 @@ import (
 
 	"github.com/m1crogravity/spy-cat-agency/internal/model"
 	"github.com/m1crogravity/spy-cat-agency/internal/storage"
+	"github.com/m1crogravity/spy-cat-agency/internal/validator"
 )
 
 func (app *application) listSpyCatHandler(w http.ResponseWriter, r *http.Request) {
@@ -52,11 +53,13 @@ func (app *application) createSpyCatHandler(w http.ResponseWriter, r *http.Reque
 		YearsOfExperience uint    `json:"years_of_experience"`
 		Breed             string  `json:"breed"`
 		Salary            float64 `json:"salary"`
+		Password          string  `json:"password"`
 	}
 
 	err := app.readJSON(w, r, &input)
 	if err != nil {
 		app.badRequestResponse(w, r, err)
+		return
 	}
 
 	spyCat := &model.SpyCat{
@@ -66,9 +69,27 @@ func (app *application) createSpyCatHandler(w http.ResponseWriter, r *http.Reque
 		Salary:            input.Salary,
 	}
 
-	err = app.spyCatsService.Create(r.Context(), spyCat)
+	err = spyCat.Password.Set(input.Password)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
+		return
+	}
+
+	v := validator.New()
+	if model.ValidateSpyCat(v, spyCat); !v.Valid() {
+		app.failedValidationResponse(w, r, v.Errors)
+		return
+	}
+
+	err = app.spyCatsService.Create(r.Context(), spyCat)
+	if err != nil {
+		switch {
+		case errors.Is(err, storage.ErrorUniqueConstraintViolation):
+			v.AddError("name", "a spy cat with this name is already exists")
+			app.failedValidationResponse(w, r, v.Errors)
+		default:
+			app.serverErrorResponse(w, r, err)
+		}
 		return
 	}
 

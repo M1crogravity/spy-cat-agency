@@ -9,7 +9,10 @@ import (
 
 type contextKey string
 
-const spyCatContextKey = contextKey("spy-cat")
+const (
+	spyCatContextKey = contextKey("spy-cat")
+	agentContextKey  = contextKey("agent")
+)
 
 func (app *application) contextSetSpyCat(r *http.Request, spyCat *model.SpyCat) *http.Request {
 	ctx := context.WithValue(r.Context(), spyCatContextKey, spyCat)
@@ -17,9 +20,22 @@ func (app *application) contextSetSpyCat(r *http.Request, spyCat *model.SpyCat) 
 }
 
 func (app *application) contextGetSpyCat(r *http.Request) *model.SpyCat {
-	user, ok := r.Context().Value(spyCatContextKey).(*model.SpyCat)
+	spyCat, ok := r.Context().Value(spyCatContextKey).(*model.SpyCat)
 	if !ok {
-		panic("missing user value in request context") //shrug
+		panic("missing spy cat value in request context")
 	}
-	return user
+	return spyCat
+}
+
+func (app *application) contextSetAgent(r *http.Request, agent *model.Agent) *http.Request {
+	ctx := context.WithValue(r.Context(), agentContextKey, agent)
+	return r.WithContext(ctx)
+}
+
+func (app *application) contextGetAgent(r *http.Request) *model.Agent {
+	agent, ok := r.Context().Value(agentContextKey).(*model.Agent)
+	if !ok {
+		panic("missing agent value in request context")
+	}
+	return agent
 }

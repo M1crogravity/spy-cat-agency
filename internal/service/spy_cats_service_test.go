@@ -25,6 +25,10 @@ func TestSpyCatsCreate(t *testing.T) {
 	if spyCat.Id == 0 {
 		t.Fatal("Spy cat ID was not set")
 	}
+	err = service.Create(t.Context(), spyCat)
+	if !errors.Is(err, storage.ErrorUniqueConstraintViolation) {
+		t.Fatal("unique name constaint violation")
+	}
 }
 
 func TestSpyCatsGetById(t *testing.T) {

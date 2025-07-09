@@ -9,19 +9,25 @@ import (
 
 type SpyCatsRepository struct {
 	spyCats map[int64]*model.SpyCat
+	names   map[string]int64
 	lastId  int64
 }
 
 func NewSpyCatRepository() *SpyCatsRepository {
 	return &SpyCatsRepository{
 		spyCats: make(map[int64]*model.SpyCat),
+		names:   make(map[string]int64),
 	}
 }
 
 func (r *SpyCatsRepository) Create(ctx context.Context, spyCat *model.SpyCat) error {
+	if _, ok := r.names[spyCat.Name]; ok {
+		return storage.ErrorUniqueConstraintViolation
+	}
 	id := r.lastId + 1
 	spyCat.Id = id
 	r.spyCats[id] = spyCat
+	r.names[spyCat.Name] = id
 	r.lastId = id
 	return nil
 }
@@ -62,4 +68,18 @@ func (r *SpyCatsRepository) FindAll(ctx context.Context) ([]*model.SpyCat, error
 	}
 
 	return spyCats, nil
+}
+
+func (r *SpyCatsRepository) FindByName(ctx context.Context, name string) (*model.SpyCat, error) {
+	id, ok := r.names[name]
+	if !ok {
+		return nil, storage.ErrorModelNotFound
+	}
+
+	spyCat, ok := r.spyCats[id]
+	if !ok {
+		panic("spy cat repository data inconsistency")
+	}
+
+	return spyCat, nil
 }
