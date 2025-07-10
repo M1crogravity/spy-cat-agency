@@ -1,0 +1,1002 @@
+basePath: /v1
+definitions:
+  main.AgentDoc:
+    description: Agent entity
+    properties:
+      id:
+        description: |-
+          Unique identifier
+          Example: 1
+        type: integer
+      name:
+        description: |-
+          Agent name
+          Example: Agent Smith
+        type: string
+    type: object
+  main.AgentResponseDoc:
+    description: Response containing a single agent
+    properties:
+      agent:
+        allOf:
+        - $ref: '#/definitions/main.AgentDoc'
+        description: Agent data
+    type: object
+  main.AuthenticationRequestDoc:
+    description: Request body for user authentication
+    properties:
+      name:
+        description: |-
+          User name
+          Example: Agent Smith
+        type: string
+      password:
+        description: |-
+          User password
+          Example: password123
+        type: string
+    type: object
+  main.CreateAgentRequestDoc:
+    description: Request body for creating a new agent
+    properties:
+      name:
+        description: |-
+          Agent name
+          Example: Agent Smith
+        type: string
+      password:
+        description: |-
+          Password for authentication
+          Example: agentpassword123
+        type: string
+    type: object
+  main.CreateMissionRequestDoc:
+    description: Request body for creating a new mission
+    properties:
+      targets:
+        description: List of targets for the mission
+        items:
+          $ref: '#/definitions/main.CreateTargetRequestDoc'
+        type: array
+    type: object
+  main.CreateSpyCatRequestDoc:
+    description: Request body for creating a new spy cat
+    properties:
+      breed:
+        description: |-
+          Cat breed
+          Example: Siamese
+        type: string
+      name:
+        description: |-
+          Spy cat name
+          Example: Agent Whiskers
+        type: string
+      password:
+        description: |-
+          Password for authentication
+          Example: secretpassword123
+        type: string
+      salary:
+        description: |-
+          Annual salary
+          Example: 50000.00
+        type: number
+      years_of_experience:
+        description: |-
+          Years of experience
+          Example: 5
+        type: integer
+    type: object
+  main.CreateTargetRequestDoc:
+    description: Request body for creating a new target
+    properties:
+      country:
+        description: |-
+          Target country
+          Example: Switzerland
+        type: string
+      name:
+        description: |-
+          Target name
+          Example: Dr. Evil
+        type: string
+    type: object
+  main.ErrorResponseDoc:
+    description: Standard error response format
+    properties:
+      error:
+        description: |-
+          Error message
+          Example: error message
+        type: string
+    type: object
+  main.MessageResponseDoc:
+    description: Simple message response format
+    properties:
+      message:
+        description: |-
+          Success message
+          Example: operation completed successfully
+        type: string
+    type: object
+  main.MissionDoc:
+    description: Mission entity
+    properties:
+      assigned_cat_id:
+        description: |-
+          ID of assigned spy cat
+          Example: 1
+        type: integer
+      id:
+        description: |-
+          Unique identifier
+          Example: 1
+        type: integer
+      state:
+        description: |-
+          Mission state (created, in_progress, completed)
+          Example: created
+        type: string
+      targets:
+        description: List of mission targets
+        items:
+          $ref: '#/definitions/main.TargetDoc'
+        type: array
+    type: object
+  main.MissionResponseDoc:
+    description: Response containing a single mission
+    properties:
+      mission:
+        allOf:
+        - $ref: '#/definitions/main.MissionDoc'
+        description: Mission data
+    type: object
+  main.MissionsResponseDoc:
+    description: Response containing a list of missions
+    properties:
+      missions:
+        description: List of missions
+        items:
+          $ref: '#/definitions/main.MissionDoc'
+        type: array
+    type: object
+  main.SpyCatDoc:
+    description: Spy cat entity
+    properties:
+      breed:
+        description: |-
+          Cat breed
+          Example: Siamese
+        type: string
+      id:
+        description: |-
+          Unique identifier
+          Example: 1
+        type: integer
+      name:
+        description: |-
+          Spy cat name
+          Example: Agent Whiskers
+        type: string
+      salary:
+        description: |-
+          Annual salary
+          Example: 50000.00
+        type: number
+      years_of_experience:
+        description: |-
+          Years of experience
+          Example: 5
+        type: integer
+    type: object
+  main.SpyCatResponseDoc:
+    description: Response containing a single spy cat
+    properties:
+      spy-cat:
+        allOf:
+        - $ref: '#/definitions/main.SpyCatDoc'
+        description: Spy cat data
+    type: object
+  main.SpyCatsResponseDoc:
+    description: Response containing a list of spy cats
+    properties:
+      spy-cats:
+        description: List of spy cats
+        items:
+          $ref: '#/definitions/main.SpyCatDoc'
+        type: array
+    type: object
+  main.TargetDoc:
+    description: Mission target entity
+    properties:
+      country:
+        description: |-
+          Target country
+          Example: Switzerland
+        type: string
+      id:
+        description: |-
+          Unique identifier
+          Example: 1
+        type: integer
+      mission_id:
+        description: |-
+          Mission ID this target belongs to
+          Example: 1
+        type: integer
+      name:
+        description: |-
+          Target name
+          Example: Dr. Evil
+        type: string
+      notes:
+        description: |-
+          Notes about the target
+          Example: Target spotted at secret lair
+        type: string
+      state:
+        description: |-
+          Target state (created, in_progress, completed)
+          Example: created
+        type: string
+    type: object
+  main.TargetResponseDoc:
+    description: Response containing a single target
+    properties:
+      target:
+        allOf:
+        - $ref: '#/definitions/main.TargetDoc'
+        description: Target data
+    type: object
+  main.TokenDoc:
+    description: Authentication token entity
+    properties:
+      expiry:
+        description: |-
+          Token expiry date
+          Example: 2024-01-01T00:00:00Z
+        type: string
+      plaintext:
+        description: |-
+          Token plaintext value
+          Example: ABCDEF123456
+        type: string
+      scope:
+        description: |-
+          Token scope
+          Example: authentication
+        type: string
+      user_id:
+        description: |-
+          User ID associated with the token
+          Example: 1
+        type: integer
+    type: object
+  main.TokenResponseDoc:
+    description: Response containing an authentication token
+    properties:
+      authentication_token:
+        allOf:
+        - $ref: '#/definitions/main.TokenDoc'
+        description: Authentication token data
+    type: object
+  main.UpdateSpyCatSalaryRequestDoc:
+    description: Request body for updating a spy cat's salary
+    properties:
+      salary:
+        description: |-
+          New salary amount
+          Example: 55000.00
+        type: number
+    type: object
+  main.UpdateTargetNotesRequestDoc:
+    description: Request body for updating target notes
+    properties:
+      notes:
+        description: |-
+          Notes about the target
+          Example: Target spotted at secret lair
+        type: string
+    type: object
+  main.ValidationErrorResponseDoc:
+    description: Validation error response format with field-specific errors
+    properties:
+      error:
+        additionalProperties:
+          type: string
+        description: |-
+          Map of field names to error messages
+          Example: {"name": "must be provided", "breed": "invalid breed"}
+        type: object
+    type: object
+host: localhost:4000
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: A REST API for managing spy cats, missions, and agents
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Spy Cat Agency API
+  version: "1.0"
+paths:
+  /agents:
+    post:
+      consumes:
+      - application/json
+      description: Create a new agent with name and password
+      parameters:
+      - description: Agent Details
+        in: body
+        name: agent
+        required: true
+        schema:
+          $ref: '#/definitions/main.CreateAgentRequestDoc'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.AgentResponseDoc'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/main.ValidationErrorResponseDoc'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+      summary: Create a new agent
+      tags:
+      - agents
+  /missions:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all missions
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.MissionsResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+      security:
+      - BearerAuth: []
+      summary: List all missions
+      tags:
+      - missions
+    post:
+      consumes:
+      - application/json
+      description: Create a new mission with targets
+      parameters:
+      - description: Mission Details
+        in: body
+        name: mission
+        required: true
+        schema:
+          $ref: '#/definitions/main.CreateMissionRequestDoc'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.MissionResponseDoc'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/main.ValidationErrorResponseDoc'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+      security:
+      - BearerAuth: []
+      summary: Create a new mission
+      tags:
+      - missions
+  /missions/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a mission by ID
+      parameters:
+      - description: Mission ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.MessageResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+      security:
+      - BearerAuth: []
+      summary: Delete a mission
+      tags:
+      - missions
+    get:
+      consumes:
+      - application/json
+      description: Get details of a specific mission by ID
+      parameters:
+      - description: Mission ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.MissionResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+      security:
+      - BearerAuth: []
+      summary: Get a mission by ID
+      tags:
+      - missions
+  /missions/{id}/complete:
+    patch:
+      consumes:
+      - application/json
+      description: Mark a mission as completed
+      parameters:
+      - description: Mission ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.MissionResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+      security:
+      - BearerAuth: []
+      summary: Complete a mission
+      tags:
+      - missions
+  /missions/{id}/spy-cat/{spy-cat-id}:
+    patch:
+      consumes:
+      - application/json
+      description: Assign a mission to a specific spy cat
+      parameters:
+      - description: Mission ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Spy Cat ID
+        in: path
+        name: spy-cat-id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.MissionResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+      security:
+      - BearerAuth: []
+      summary: Assign mission to spy cat
+      tags:
+      - missions
+  /missions/{id}/targets:
+    post:
+      consumes:
+      - application/json
+      description: Add a new target to a mission
+      parameters:
+      - description: Mission ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Target Details
+        in: body
+        name: target
+        required: true
+        schema:
+          $ref: '#/definitions/main.CreateTargetRequestDoc'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.TargetResponseDoc'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+      security:
+      - BearerAuth: []
+      summary: Create mission target
+      tags:
+      - missions
+  /missions/{id}/targets/{target-id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a mission target by ID
+      parameters:
+      - description: Mission ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Target ID
+        in: path
+        name: target-id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.MessageResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+      security:
+      - BearerAuth: []
+      summary: Delete mission target
+      tags:
+      - missions
+    patch:
+      consumes:
+      - application/json
+      description: Update the notes of a mission target
+      parameters:
+      - description: Mission ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Target ID
+        in: path
+        name: target-id
+        required: true
+        type: integer
+      - description: Target Notes
+        in: body
+        name: notes
+        required: true
+        schema:
+          $ref: '#/definitions/main.UpdateTargetNotesRequestDoc'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.TargetResponseDoc'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+      security:
+      - BearerAuth: []
+      summary: Update mission target
+      tags:
+      - missions
+  /missions/{id}/targets/{target-id}/complete:
+    patch:
+      consumes:
+      - application/json
+      description: Mark a mission target as completed
+      parameters:
+      - description: Mission ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Target ID
+        in: path
+        name: target-id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.TargetResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+      security:
+      - BearerAuth: []
+      summary: Complete mission target
+      tags:
+      - missions
+  /spy-cats:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all spy cats
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.SpyCatsResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+      security:
+      - BearerAuth: []
+      summary: List all spy cats
+      tags:
+      - spy-cats
+    post:
+      consumes:
+      - application/json
+      description: Create a new spy cat with the provided details
+      parameters:
+      - description: Spy Cat Details
+        in: body
+        name: spy-cat
+        required: true
+        schema:
+          $ref: '#/definitions/main.CreateSpyCatRequestDoc'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.SpyCatResponseDoc'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/main.ValidationErrorResponseDoc'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+      security:
+      - BearerAuth: []
+      summary: Create a new spy cat
+      tags:
+      - spy-cats
+  /spy-cats/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a spy cat by ID
+      parameters:
+      - description: Spy Cat ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.MessageResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+      security:
+      - BearerAuth: []
+      summary: Delete a spy cat
+      tags:
+      - spy-cats
+    get:
+      consumes:
+      - application/json
+      description: Get details of a specific spy cat by ID
+      parameters:
+      - description: Spy Cat ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.SpyCatResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+      security:
+      - BearerAuth: []
+      summary: Get a spy cat by ID
+      tags:
+      - spy-cats
+    patch:
+      consumes:
+      - application/json
+      description: Update the salary of a specific spy cat
+      parameters:
+      - description: Spy Cat ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Salary Update
+        in: body
+        name: salary
+        required: true
+        schema:
+          $ref: '#/definitions/main.UpdateSpyCatSalaryRequestDoc'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.SpyCatResponseDoc'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+      security:
+      - BearerAuth: []
+      summary: Update spy cat salary
+      tags:
+      - spy-cats
+  /tokens/authentication/agents:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate an agent and return a JWT token
+      parameters:
+      - description: Agent Credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/main.AuthenticationRequestDoc'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.TokenResponseDoc'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/main.ValidationErrorResponseDoc'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+      summary: Create agent authentication token
+      tags:
+      - authentication
+  /tokens/authentication/spy-cats:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate a spy cat and return a JWT token
+      parameters:
+      - description: Spy Cat Credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/main.AuthenticationRequestDoc'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.TokenResponseDoc'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/main.ValidationErrorResponseDoc'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main.ErrorResponseDoc'
+      summary: Create spy cat authentication token
+      tags:
+      - authentication
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

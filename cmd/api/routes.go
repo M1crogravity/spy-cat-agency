@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 func (app *application) routes() http.Handler {
@@ -33,6 +34,8 @@ func (app *application) routes() http.Handler {
 
 	router.HandlerFunc(http.MethodPost, "/v1/tokens/authentication/spy-cats", app.createSpyCatAuthenticationTokenHandler)
 	router.HandlerFunc(http.MethodPost, "/v1/tokens/authentication/agents", app.createAgentAuthenticationTokenHandler)
+
+	router.Handler(http.MethodGet, "/swagger/*filepath", httpSwagger.WrapHandler)
 
 	return app.recoverPanic(
 		app.logRequestResponse(

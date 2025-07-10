@@ -10,6 +10,18 @@ import (
 	"github.com/m1crogravity/spy-cat-agency/internal/validator"
 )
 
+// @Summary Create spy cat authentication token
+// @Description Authenticate a spy cat and return a JWT token
+// @Tags authentication
+// @Accept json
+// @Produce json
+// @Param credentials body AuthenticationRequestDoc true "Spy Cat Credentials"
+// @Success 201 {object} TokenResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Failure 422 {object} ValidationErrorResponseDoc
+// @Failure 500 {object} ErrorResponseDoc
+// @Router /tokens/authentication/spy-cats [post]
 func (app *application) createSpyCatAuthenticationTokenHandler(w http.ResponseWriter, r *http.Request) {
 	var input struct {
 		Name     string `json:"name"`
@@ -66,6 +78,18 @@ func (app *application) createSpyCatAuthenticationTokenHandler(w http.ResponseWr
 	}
 }
 
+// @Summary Create agent authentication token
+// @Description Authenticate an agent and return a JWT token
+// @Tags authentication
+// @Accept json
+// @Produce json
+// @Param credentials body AuthenticationRequestDoc true "Agent Credentials"
+// @Success 201 {object} TokenResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Failure 422 {object} ValidationErrorResponseDoc
+// @Failure 500 {object} ErrorResponseDoc
+// @Router /tokens/authentication/agents [post]
 func (app *application) createAgentAuthenticationTokenHandler(w http.ResponseWriter, r *http.Request) {
 	var input struct {
 		Name     string `json:"name"`

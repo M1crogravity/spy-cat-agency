@@ -1,0 +1,1419 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "A REST API for managing spy cats, missions, and agents",
+        "title": "Spy Cat Agency API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.swagger.io/support",
+            "email": "support@swagger.io"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:4000",
+    "basePath": "/v1",
+    "paths": {
+        "/agents": {
+            "post": {
+                "description": "Create a new agent with name and password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "agents"
+                ],
+                "summary": "Create a new agent",
+                "parameters": [
+                    {
+                        "description": "Agent Details",
+                        "name": "agent",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.CreateAgentRequestDoc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/main.AgentResponseDoc"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/main.ValidationErrorResponseDoc"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    }
+                }
+            }
+        },
+        "/missions": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get a list of all missions",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "missions"
+                ],
+                "summary": "List all missions",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.MissionsResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create a new mission with targets",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "missions"
+                ],
+                "summary": "Create a new mission",
+                "parameters": [
+                    {
+                        "description": "Mission Details",
+                        "name": "mission",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.CreateMissionRequestDoc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/main.MissionResponseDoc"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/main.ValidationErrorResponseDoc"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    }
+                }
+            }
+        },
+        "/missions/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get details of a specific mission by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "missions"
+                ],
+                "summary": "Get a mission by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Mission ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.MissionResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete a mission by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "missions"
+                ],
+                "summary": "Delete a mission",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Mission ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.MessageResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    }
+                }
+            }
+        },
+        "/missions/{id}/complete": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Mark a mission as completed",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "missions"
+                ],
+                "summary": "Complete a mission",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Mission ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.MissionResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    }
+                }
+            }
+        },
+        "/missions/{id}/spy-cat/{spy-cat-id}": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Assign a mission to a specific spy cat",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "missions"
+                ],
+                "summary": "Assign mission to spy cat",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Mission ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Spy Cat ID",
+                        "name": "spy-cat-id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.MissionResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    }
+                }
+            }
+        },
+        "/missions/{id}/targets": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Add a new target to a mission",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "missions"
+                ],
+                "summary": "Create mission target",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Mission ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Target Details",
+                        "name": "target",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.CreateTargetRequestDoc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/main.TargetResponseDoc"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    }
+                }
+            }
+        },
+        "/missions/{id}/targets/{target-id}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete a mission target by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "missions"
+                ],
+                "summary": "Delete mission target",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Mission ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Target ID",
+                        "name": "target-id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.MessageResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update the notes of a mission target",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "missions"
+                ],
+                "summary": "Update mission target",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Mission ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Target ID",
+                        "name": "target-id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Target Notes",
+                        "name": "notes",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.UpdateTargetNotesRequestDoc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.TargetResponseDoc"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    }
+                }
+            }
+        },
+        "/missions/{id}/targets/{target-id}/complete": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Mark a mission target as completed",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "missions"
+                ],
+                "summary": "Complete mission target",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Mission ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Target ID",
+                        "name": "target-id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.TargetResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    }
+                }
+            }
+        },
+        "/spy-cats": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get a list of all spy cats",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "spy-cats"
+                ],
+                "summary": "List all spy cats",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.SpyCatsResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create a new spy cat with the provided details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "spy-cats"
+                ],
+                "summary": "Create a new spy cat",
+                "parameters": [
+                    {
+                        "description": "Spy Cat Details",
+                        "name": "spy-cat",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.CreateSpyCatRequestDoc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/main.SpyCatResponseDoc"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/main.ValidationErrorResponseDoc"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    }
+                }
+            }
+        },
+        "/spy-cats/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get details of a specific spy cat by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "spy-cats"
+                ],
+                "summary": "Get a spy cat by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Spy Cat ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.SpyCatResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete a spy cat by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "spy-cats"
+                ],
+                "summary": "Delete a spy cat",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Spy Cat ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.MessageResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update the salary of a specific spy cat",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "spy-cats"
+                ],
+                "summary": "Update spy cat salary",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Spy Cat ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Salary Update",
+                        "name": "salary",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.UpdateSpyCatSalaryRequestDoc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.SpyCatResponseDoc"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    }
+                }
+            }
+        },
+        "/tokens/authentication/agents": {
+            "post": {
+                "description": "Authenticate an agent and return a JWT token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "authentication"
+                ],
+                "summary": "Create agent authentication token",
+                "parameters": [
+                    {
+                        "description": "Agent Credentials",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.AuthenticationRequestDoc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/main.TokenResponseDoc"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/main.ValidationErrorResponseDoc"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    }
+                }
+            }
+        },
+        "/tokens/authentication/spy-cats": {
+            "post": {
+                "description": "Authenticate a spy cat and return a JWT token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "authentication"
+                ],
+                "summary": "Create spy cat authentication token",
+                "parameters": [
+                    {
+                        "description": "Spy Cat Credentials",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.AuthenticationRequestDoc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/main.TokenResponseDoc"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/main.ValidationErrorResponseDoc"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/main.ErrorResponseDoc"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "main.AgentDoc": {
+            "description": "Agent entity",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "Unique identifier\nExample: 1",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "Agent name\nExample: Agent Smith",
+                    "type": "string"
+                }
+            }
+        },
+        "main.AgentResponseDoc": {
+            "description": "Response containing a single agent",
+            "type": "object",
+            "properties": {
+                "agent": {
+                    "description": "Agent data",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/main.AgentDoc"
+                        }
+                    ]
+                }
+            }
+        },
+        "main.AuthenticationRequestDoc": {
+            "description": "Request body for user authentication",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "description": "User name\nExample: Agent Smith",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "User password\nExample: password123",
+                    "type": "string"
+                }
+            }
+        },
+        "main.CreateAgentRequestDoc": {
+            "description": "Request body for creating a new agent",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "description": "Agent name\nExample: Agent Smith",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "Password for authentication\nExample: agentpassword123",
+                    "type": "string"
+                }
+            }
+        },
+        "main.CreateMissionRequestDoc": {
+            "description": "Request body for creating a new mission",
+            "type": "object",
+            "properties": {
+                "targets": {
+                    "description": "List of targets for the mission",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/main.CreateTargetRequestDoc"
+                    }
+                }
+            }
+        },
+        "main.CreateSpyCatRequestDoc": {
+            "description": "Request body for creating a new spy cat",
+            "type": "object",
+            "properties": {
+                "breed": {
+                    "description": "Cat breed\nExample: Siamese",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Spy cat name\nExample: Agent Whiskers",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "Password for authentication\nExample: secretpassword123",
+                    "type": "string"
+                },
+                "salary": {
+                    "description": "Annual salary\nExample: 50000.00",
+                    "type": "number"
+                },
+                "years_of_experience": {
+                    "description": "Years of experience\nExample: 5",
+                    "type": "integer"
+                }
+            }
+        },
+        "main.CreateTargetRequestDoc": {
+            "description": "Request body for creating a new target",
+            "type": "object",
+            "properties": {
+                "country": {
+                    "description": "Target country\nExample: Switzerland",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Target name\nExample: Dr. Evil",
+                    "type": "string"
+                }
+            }
+        },
+        "main.ErrorResponseDoc": {
+            "description": "Standard error response format",
+            "type": "object",
+            "properties": {
+                "error": {
+                    "description": "Error message\nExample: error message",
+                    "type": "string"
+                }
+            }
+        },
+        "main.MessageResponseDoc": {
+            "description": "Simple message response format",
+            "type": "object",
+            "properties": {
+                "message": {
+                    "description": "Success message\nExample: operation completed successfully",
+                    "type": "string"
+                }
+            }
+        },
+        "main.MissionDoc": {
+            "description": "Mission entity",
+            "type": "object",
+            "properties": {
+                "assigned_cat_id": {
+                    "description": "ID of assigned spy cat\nExample: 1",
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "Unique identifier\nExample: 1",
+                    "type": "integer"
+                },
+                "state": {
+                    "description": "Mission state (created, in_progress, completed)\nExample: created",
+                    "type": "string"
+                },
+                "targets": {
+                    "description": "List of mission targets",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/main.TargetDoc"
+                    }
+                }
+            }
+        },
+        "main.MissionResponseDoc": {
+            "description": "Response containing a single mission",
+            "type": "object",
+            "properties": {
+                "mission": {
+                    "description": "Mission data",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/main.MissionDoc"
+                        }
+                    ]
+                }
+            }
+        },
+        "main.MissionsResponseDoc": {
+            "description": "Response containing a list of missions",
+            "type": "object",
+            "properties": {
+                "missions": {
+                    "description": "List of missions",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/main.MissionDoc"
+                    }
+                }
+            }
+        },
+        "main.SpyCatDoc": {
+            "description": "Spy cat entity",
+            "type": "object",
+            "properties": {
+                "breed": {
+                    "description": "Cat breed\nExample: Siamese",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "Unique identifier\nExample: 1",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "Spy cat name\nExample: Agent Whiskers",
+                    "type": "string"
+                },
+                "salary": {
+                    "description": "Annual salary\nExample: 50000.00",
+                    "type": "number"
+                },
+                "years_of_experience": {
+                    "description": "Years of experience\nExample: 5",
+                    "type": "integer"
+                }
+            }
+        },
+        "main.SpyCatResponseDoc": {
+            "description": "Response containing a single spy cat",
+            "type": "object",
+            "properties": {
+                "spy-cat": {
+                    "description": "Spy cat data",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/main.SpyCatDoc"
+                        }
+                    ]
+                }
+            }
+        },
+        "main.SpyCatsResponseDoc": {
+            "description": "Response containing a list of spy cats",
+            "type": "object",
+            "properties": {
+                "spy-cats": {
+                    "description": "List of spy cats",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/main.SpyCatDoc"
+                    }
+                }
+            }
+        },
+        "main.TargetDoc": {
+            "description": "Mission target entity",
+            "type": "object",
+            "properties": {
+                "country": {
+                    "description": "Target country\nExample: Switzerland",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "Unique identifier\nExample: 1",
+                    "type": "integer"
+                },
+                "mission_id": {
+                    "description": "Mission ID this target belongs to\nExample: 1",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "Target name\nExample: Dr. Evil",
+                    "type": "string"
+                },
+                "notes": {
+                    "description": "Notes about the target\nExample: Target spotted at secret lair",
+                    "type": "string"
+                },
+                "state": {
+                    "description": "Target state (created, in_progress, completed)\nExample: created",
+                    "type": "string"
+                }
+            }
+        },
+        "main.TargetResponseDoc": {
+            "description": "Response containing a single target",
+            "type": "object",
+            "properties": {
+                "target": {
+                    "description": "Target data",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/main.TargetDoc"
+                        }
+                    ]
+                }
+            }
+        },
+        "main.TokenDoc": {
+            "description": "Authentication token entity",
+            "type": "object",
+            "properties": {
+                "expiry": {
+                    "description": "Token expiry date\nExample: 2024-01-01T00:00:00Z",
+                    "type": "string"
+                },
+                "plaintext": {
+                    "description": "Token plaintext value\nExample: ABCDEF123456",
+                    "type": "string"
+                },
+                "scope": {
+                    "description": "Token scope\nExample: authentication",
+                    "type": "string"
+                },
+                "user_id": {
+                    "description": "User ID associated with the token\nExample: 1",
+                    "type": "integer"
+                }
+            }
+        },
+        "main.TokenResponseDoc": {
+            "description": "Response containing an authentication token",
+            "type": "object",
+            "properties": {
+                "authentication_token": {
+                    "description": "Authentication token data",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/main.TokenDoc"
+                        }
+                    ]
+                }
+            }
+        },
+        "main.UpdateSpyCatSalaryRequestDoc": {
+            "description": "Request body for updating a spy cat's salary",
+            "type": "object",
+            "properties": {
+                "salary": {
+                    "description": "New salary amount\nExample: 55000.00",
+                    "type": "number"
+                }
+            }
+        },
+        "main.UpdateTargetNotesRequestDoc": {
+            "description": "Request body for updating target notes",
+            "type": "object",
+            "properties": {
+                "notes": {
+                    "description": "Notes about the target\nExample: Target spotted at secret lair",
+                    "type": "string"
+                }
+            }
+        },
+        "main.ValidationErrorResponseDoc": {
+            "description": "Validation error response format with field-specific errors",
+            "type": "object",
+            "properties": {
+                "error": {
+                    "description": "Map of field names to error messages\nExample: {\"name\": \"must be provided\", \"breed\": \"invalid breed\"}",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Type \"Bearer\" followed by a space and JWT token.",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

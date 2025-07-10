@@ -1,3 +1,23 @@
+//	@title			Spy Cat Agency API
+//	@version		1.0
+//	@description	A REST API for managing spy cats, missions, and agents
+//	@termsOfService	http://swagger.io/terms/
+
+//	@contact.name	API Support
+//	@contact.url	http://www.swagger.io/support
+//	@contact.email	support@swagger.io
+
+//	@license.name	MIT
+//	@license.url	https://opensource.org/licenses/MIT
+
+//	@host		localhost:4000
+//	@BasePath	/v1
+
+//	@securityDefinitions.apikey	BearerAuth
+//	@in							header
+//	@name						Authorization
+//	@description				Type "Bearer" followed by a space and JWT token.
+
 package main
 
 import (
@@ -16,6 +36,8 @@ import (
 	"github.com/m1crogravity/spy-cat-agency/internal/service"
 	"github.com/m1crogravity/spy-cat-agency/internal/storage/postgres"
 	"github.com/m1crogravity/spy-cat-agency/internal/storage/remote"
+
+	_ "github.com/m1crogravity/spy-cat-agency/docs"
 )
 
 type config struct {

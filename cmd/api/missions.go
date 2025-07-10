@@ -14,6 +14,19 @@ type inputTarget struct {
 	Country string `json:"country"`
 }
 
+// @Summary Create a new mission
+// @Description Create a new mission with targets
+// @Tags missions
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param mission body CreateMissionRequestDoc true "Mission Details"
+// @Success 201 {object} MissionResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Failure 422 {object} ValidationErrorResponseDoc
+// @Failure 500 {object} ErrorResponseDoc
+// @Router /missions [post]
 func (app *application) createMissionHandler(w http.ResponseWriter, r *http.Request) {
 	var input struct {
 		Targets []inputTarget `json:"targets"`
@@ -59,6 +72,16 @@ func (app *application) createMissionHandler(w http.ResponseWriter, r *http.Requ
 	}
 }
 
+// @Summary List all missions
+// @Description Get a list of all missions
+// @Tags missions
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} MissionsResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Failure 500 {object} ErrorResponseDoc
+// @Router /missions [get]
 func (app *application) listMissionHandler(w http.ResponseWriter, r *http.Request) {
 	missions, err := app.missionsService.GetAll(r.Context())
 	if err != nil {
@@ -72,6 +95,18 @@ func (app *application) listMissionHandler(w http.ResponseWriter, r *http.Reques
 	}
 }
 
+// @Summary Get a mission by ID
+// @Description Get details of a specific mission by ID
+// @Tags missions
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Mission ID"
+// @Success 200 {object} MissionResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Failure 404 {object} ErrorResponseDoc
+// @Failure 500 {object} ErrorResponseDoc
+// @Router /missions/{id} [get]
 func (app *application) getMissionHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := app.readIDParam(r, "id")
 	if err != nil {
@@ -96,6 +131,18 @@ func (app *application) getMissionHandler(w http.ResponseWriter, r *http.Request
 	}
 }
 
+// @Summary Delete a mission
+// @Description Delete a mission by ID
+// @Tags missions
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Mission ID"
+// @Success 200 {object} MessageResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Failure 404 {object} ErrorResponseDoc
+// @Failure 500 {object} ErrorResponseDoc
+// @Router /missions/{id} [delete]
 func (app *application) deleteMissionHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := app.readIDParam(r, "id")
 	if err != nil {
@@ -120,6 +167,18 @@ func (app *application) deleteMissionHandler(w http.ResponseWriter, r *http.Requ
 	}
 }
 
+// @Summary Complete a mission
+// @Description Mark a mission as completed
+// @Tags missions
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Mission ID"
+// @Success 200 {object} MissionResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Failure 404 {object} ErrorResponseDoc
+// @Failure 500 {object} ErrorResponseDoc
+// @Router /missions/{id}/complete [patch]
 func (app *application) completeMissionHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := app.readIDParam(r, "id")
 	if err != nil {
@@ -145,6 +204,19 @@ func (app *application) completeMissionHandler(w http.ResponseWriter, r *http.Re
 	}
 }
 
+// @Summary Assign mission to spy cat
+// @Description Assign a mission to a specific spy cat
+// @Tags missions
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Mission ID"
+// @Param spy-cat-id path int true "Spy Cat ID"
+// @Success 200 {object} MissionResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Failure 404 {object} ErrorResponseDoc
+// @Failure 500 {object} ErrorResponseDoc
+// @Router /missions/{id}/spy-cat/{spy-cat-id} [patch]
 func (app *application) assignMissionHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := app.readIDParam(r, "id")
 	if err != nil {
@@ -194,6 +266,21 @@ func (app *application) assignMissionHandler(w http.ResponseWriter, r *http.Requ
 		app.serverErrorResponse(w, r, err)
 	}
 }
+
+// @Summary Create mission target
+// @Description Add a new target to a mission
+// @Tags missions
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Mission ID"
+// @Param target body CreateTargetRequestDoc true "Target Details"
+// @Success 201 {object} TargetResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Failure 404 {object} ErrorResponseDoc
+// @Failure 500 {object} ErrorResponseDoc
+// @Router /missions/{id}/targets [post]
 func (app *application) createMissionTargetHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := app.readIDParam(r, "id")
 	if err != nil {
@@ -240,6 +327,19 @@ func (app *application) createMissionTargetHandler(w http.ResponseWriter, r *htt
 	}
 }
 
+// @Summary Complete mission target
+// @Description Mark a mission target as completed
+// @Tags missions
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Mission ID"
+// @Param target-id path int true "Target ID"
+// @Success 200 {object} TargetResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Failure 404 {object} ErrorResponseDoc
+// @Failure 500 {object} ErrorResponseDoc
+// @Router /missions/{id}/targets/{target-id}/complete [patch]
 func (app *application) completeMissionTargetHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := app.readIDParam(r, "id")
 	if err != nil {
@@ -283,6 +383,21 @@ func (app *application) completeMissionTargetHandler(w http.ResponseWriter, r *h
 	}
 }
 
+// @Summary Update mission target
+// @Description Update the notes of a mission target
+// @Tags missions
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Mission ID"
+// @Param target-id path int true "Target ID"
+// @Param notes body UpdateTargetNotesRequestDoc true "Target Notes"
+// @Success 200 {object} TargetResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Failure 404 {object} ErrorResponseDoc
+// @Failure 500 {object} ErrorResponseDoc
+// @Router /missions/{id}/targets/{target-id} [patch]
 func (app *application) updateMissionTargetHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := app.readIDParam(r, "id")
 	if err != nil {
@@ -339,6 +454,19 @@ func (app *application) updateMissionTargetHandler(w http.ResponseWriter, r *htt
 	}
 }
 
+// @Summary Delete mission target
+// @Description Delete a mission target by ID
+// @Tags missions
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Mission ID"
+// @Param target-id path int true "Target ID"
+// @Success 200 {object} MessageResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Failure 404 {object} ErrorResponseDoc
+// @Failure 500 {object} ErrorResponseDoc
+// @Router /missions/{id}/targets/{target-id} [delete]
 func (app *application) deleteMissionTargetHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := app.readIDParam(r, "id")
 	if err != nil {

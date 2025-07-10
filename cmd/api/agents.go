@@ -9,6 +9,17 @@ import (
 	"github.com/m1crogravity/spy-cat-agency/internal/validator"
 )
 
+// @Summary Create a new agent
+// @Description Create a new agent with name and password
+// @Tags agents
+// @Accept json
+// @Produce json
+// @Param agent body CreateAgentRequestDoc true "Agent Details"
+// @Success 201 {object} AgentResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 422 {object} ValidationErrorResponseDoc
+// @Failure 500 {object} ErrorResponseDoc
+// @Router /agents [post]
 func (app *application) createAgentHandler(w http.ResponseWriter, r *http.Request) {
 	var input struct {
 		Name     string

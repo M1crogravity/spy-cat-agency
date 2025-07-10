@@ -9,6 +9,16 @@ import (
 	"github.com/m1crogravity/spy-cat-agency/internal/validator"
 )
 
+// @Summary List all spy cats
+// @Description Get a list of all spy cats
+// @Tags spy-cats
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} SpyCatsResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Failure 500 {object} ErrorResponseDoc
+// @Router /spy-cats [get]
 func (app *application) listSpyCatHandler(w http.ResponseWriter, r *http.Request) {
 	//no paging
 	spyCats, err := app.spyCatsService.GetAll(r.Context())
@@ -23,6 +33,18 @@ func (app *application) listSpyCatHandler(w http.ResponseWriter, r *http.Request
 	}
 }
 
+// @Summary Get a spy cat by ID
+// @Description Get details of a specific spy cat by ID
+// @Tags spy-cats
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Spy Cat ID"
+// @Success 200 {object} SpyCatResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Failure 404 {object} ErrorResponseDoc
+// @Failure 500 {object} ErrorResponseDoc
+// @Router /spy-cats/{id} [get]
 func (app *application) getSpyCatHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := app.readIDParam(r, "id")
 	if err != nil {
@@ -47,6 +69,19 @@ func (app *application) getSpyCatHandler(w http.ResponseWriter, r *http.Request)
 	}
 }
 
+// @Summary Create a new spy cat
+// @Description Create a new spy cat with the provided details
+// @Tags spy-cats
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param spy-cat body CreateSpyCatRequestDoc true "Spy Cat Details"
+// @Success 201 {object} SpyCatResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Failure 422 {object} ValidationErrorResponseDoc
+// @Failure 500 {object} ErrorResponseDoc
+// @Router /spy-cats [post]
 func (app *application) createSpyCatHandler(w http.ResponseWriter, r *http.Request) {
 	var input struct {
 		Name              string  `json:"name"`
@@ -105,6 +140,18 @@ func (app *application) createSpyCatHandler(w http.ResponseWriter, r *http.Reque
 	}
 }
 
+// @Summary Delete a spy cat
+// @Description Delete a spy cat by ID
+// @Tags spy-cats
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Spy Cat ID"
+// @Success 200 {object} MessageResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Failure 404 {object} ErrorResponseDoc
+// @Failure 500 {object} ErrorResponseDoc
+// @Router /spy-cats/{id} [delete]
 func (app *application) deleteSpyCatHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := app.readIDParam(r, "id")
 	if err != nil {
@@ -128,6 +175,20 @@ func (app *application) deleteSpyCatHandler(w http.ResponseWriter, r *http.Reque
 	}
 }
 
+// @Summary Update spy cat salary
+// @Description Update the salary of a specific spy cat
+// @Tags spy-cats
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path int true "Spy Cat ID"
+// @Param salary body UpdateSpyCatSalaryRequestDoc true "Salary Update"
+// @Success 200 {object} SpyCatResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Failure 404 {object} ErrorResponseDoc
+// @Failure 500 {object} ErrorResponseDoc
+// @Router /spy-cats/{id} [patch]
 func (app *application) updateSpyCatHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := app.readIDParam(r, "id")
 	if err != nil {

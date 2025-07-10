@@ -10,3 +10,7 @@
 ## To create new migration:
 - run ```make migration```
 - enter migrations name
+
+## To open swagger
+- run the app
+- open http://localhost:4000/swagger/index.html
