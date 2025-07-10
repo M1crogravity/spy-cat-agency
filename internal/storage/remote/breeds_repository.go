@@ -1,7 +1,9 @@
 package remote
 
 import (
+	"bytes"
 	"context"
+	"crypto/md5"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -19,6 +21,7 @@ type BreedsRepository struct {
 	cache    []string
 	cacheTtl time.Duration
 	cachedAt time.Time
+	cacheSum [16]byte
 }
 
 func NewBreedsRepository(client Client, cacheTtl time.Duration) *BreedsRepository {
@@ -29,43 +32,48 @@ func NewBreedsRepository(client Client, cacheTtl time.Duration) *BreedsRepositor
 }
 
 func (r *BreedsRepository) FindAll(ctx context.Context) ([]string, error) {
-	if r.cache != nil && time.Since(r.cachedAt) < r.cacheTtl {
-		return r.cache, nil
+	if r.cache == nil || time.Since(r.cachedAt) > r.cacheTtl {
+		err := r.requestBreeds(ctx)
+		if err != nil {
+			return nil, err
+		}
 	}
-
-	breeds, err := r.requestBreeds(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	r.cache = breeds
-	r.cachedAt = time.Now()
 
 	return r.cache, nil
 }
 
-func (r *BreedsRepository) requestBreeds(ctx context.Context) ([]string, error) {
+func (r *BreedsRepository) requestBreeds(ctx context.Context) error {
 	req, err := http.NewRequestWithContext(ctx, "GET", breedUrl, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	resp, err := r.client.Do(req)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New("Breed external API error")
+		return errors.New("Breed external API error")
+	}
+
+	var buf bytes.Buffer
+	if _, err := buf.ReadFrom(resp.Body); err != nil {
+		return err
+	}
+	hash := md5.Sum(buf.Bytes())
+	if hash == r.cacheSum {
+		r.cachedAt = time.Now()
+		return nil
 	}
 
 	var breeds []struct {
 		Name string `json:"name"`
 	}
 
-	if err := json.NewDecoder(resp.Body).Decode(&breeds); err != nil {
-		return nil, err
+	if err := json.NewDecoder(&buf).Decode(&breeds); err != nil {
+		return err
 	}
 
 	names := make([]string, len(breeds))
@@ -73,5 +81,8 @@ func (r *BreedsRepository) requestBreeds(ctx context.Context) ([]string, error) 
 		names[i] = breed.Name
 	}
 
-	return names, nil
+	r.cache = names
+	r.cachedAt = time.Now()
+
+	return nil
 }
