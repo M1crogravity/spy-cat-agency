@@ -9,10 +9,10 @@ const SpyCatUserType = UserType("spy-cat")
 type SpyCat struct {
 	Id                int64    `json:"id"`
 	Name              string   `json:"name"`
-	YearsOfExperience uint     `json:"years_of_experience"`
+	YearsOfExperience int      `json:"years_of_experience"`
 	Breed             string   `json:"breed"`
 	Salary            float64  `json:"salary"`
-	Password          password `json:"-"`
+	Password          Password `json:"-"`
 }
 
 func (sc *SpyCat) IsAnonymous() bool {
@@ -27,7 +27,7 @@ func ValidateSpyCat(v *validator.Validator, spyCat *SpyCat, breeds []string) {
 		ValidatePasswordPlaintext(v, *spyCat.Password.plaintext)
 	}
 
-	if spyCat.Password.hash == nil {
+	if spyCat.Password.Hash == nil {
 		panic("missing password hash for user")
 	}
 

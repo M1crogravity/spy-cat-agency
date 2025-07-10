@@ -182,6 +182,9 @@ func (s *MissionsService) AssignMission(ctx context.Context, mission *model.Miss
 
 	mission.AssignedCatId = spyCat.Id
 	mission.State = model.InProgress
+	for _, target := range mission.Targets {
+		target.State = model.InProgress
+	}
 	return s.repository.SaveMission(ctx, mission)
 }
 

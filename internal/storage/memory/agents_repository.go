@@ -19,6 +19,7 @@ func NewAgentsRepository() *AgentsRepository {
 		names:  make(map[string]int64),
 	}
 }
+
 func (r *AgentsRepository) FindByName(ctx context.Context, name string) (*model.Agent, error) {
 	id, ok := r.names[name]
 	if !ok {

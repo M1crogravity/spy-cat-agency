@@ -129,8 +129,14 @@ func (app *application) completeMissionHandler(w http.ResponseWriter, r *http.Re
 
 	mission, err := app.missionsService.CompleteMission(r.Context(), id)
 	if err != nil {
-		app.serverErrorResponse(w, r, err)
+		switch {
+		case errors.Is(err, storage.ErrorModelNotFound):
+			app.notFoundResponse(w, r)
+		default:
+			app.serverErrorResponse(w, r, err)
+		}
 		return
+
 	}
 
 	err = app.writeJson(w, http.StatusOK, envelope{"mission": mission})

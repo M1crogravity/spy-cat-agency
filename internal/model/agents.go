@@ -9,7 +9,7 @@ var AnonymousAgent = &Agent{}
 type Agent struct {
 	Id       int64    `json:"id"`
 	Name     string   `json:"name"`
-	Password password `json:"-"`
+	Password Password `json:"-"`
 }
 
 func (a *Agent) IsAnonymous() bool {
@@ -24,7 +24,7 @@ func ValidateAgent(v *validator.Validator, agent *Agent) {
 		ValidatePasswordPlaintext(v, *agent.Password.plaintext)
 	}
 
-	if agent.Password.hash == nil {
+	if agent.Password.Hash == nil {
 		panic("missing password hash for user")
 	}
 }

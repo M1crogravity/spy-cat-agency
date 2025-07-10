@@ -2,6 +2,7 @@ package memory
 
 import (
 	"context"
+	"time"
 
 	"github.com/m1crogravity/spy-cat-agency/internal/model"
 	"github.com/m1crogravity/spy-cat-agency/internal/storage"
@@ -28,7 +29,7 @@ func (r *TokensRepository) Create(ctx context.Context, token *model.Token) error
 
 func (r *TokensRepository) FindByPlaintext(ctx context.Context, tokenPLaintext string, scope string) (*model.Token, error) {
 	token, ok := r.tokens[tokenPLaintext]
-	if !ok || token.Scope != scope {
+	if !ok || token.Scope != scope || token.Expiry.Before(time.Now()) {
 		return nil, storage.ErrorModelNotFound
 	}
 

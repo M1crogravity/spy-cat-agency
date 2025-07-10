@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"flag"
 	"io"
 	"log/slog"
@@ -11,13 +12,20 @@ import (
 	"sync"
 	"time"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/m1crogravity/spy-cat-agency/internal/service"
-	"github.com/m1crogravity/spy-cat-agency/internal/storage/memory"
+	"github.com/m1crogravity/spy-cat-agency/internal/storage/postgres"
 	"github.com/m1crogravity/spy-cat-agency/internal/storage/remote"
 )
 
 type config struct {
 	port int
+	db   struct {
+		dsn         string
+		maxOpenCons int
+		maxIdleCons int
+		maxIdleTime time.Duration
+	}
 }
 
 type application struct {
@@ -35,16 +43,26 @@ func main() {
 
 	flag.IntVar(&cfg.port, "port", 4000, "API server port")
 
+	flag.StringVar(&cfg.db.dsn, "db-dsn", "postgres://head_agent:pa55word@localhost:5432/sca?sslmode=disable", "PostgreSQL DSN")
+	flag.IntVar(&cfg.db.maxOpenCons, "db-max-open-const", 25, "PostgreSQL max open connections")
+	flag.IntVar(&cfg.db.maxIdleCons, "db-max-idle-const", 25, "PostgreSQL max idle connections")
+	flag.DurationVar(&cfg.db.maxIdleTime, "db-max-idle-time", 15*time.Minute, "PostgreSQL max connection idle time")
+
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
-	spyCatsRepo := memory.NewSpyCatRepository()
+	dbPool, err := openDB(context.Background(), cfg)
+	if err != nil {
+		logger.Error(err.Error())
+		os.Exit(1)
+	}
+	spyCatsRepo := postgres.NewSpyCatsRepository(dbPool)
 	httpClient := newHttpClient(logger)
 	breedsRepo := remote.NewBreedsRepository(httpClient, 5*time.Minute)
 	spyCatsService := service.NewSpyCatService(spyCatsRepo, breedsRepo)
-	missionRepo := memory.NewMissionsRepository()
+	missionRepo := postgres.NewMissionsRepository(dbPool)
 	missionsService := service.NewMissionsService(missionRepo)
-	tokensRepo := memory.NewTokensRepository()
+	tokensRepo := postgres.NewTokensRepository(dbPool)
 	tokensService := service.NewTokensService(tokensRepo)
-	agentsRepository := memory.NewAgentsRepository()
+	agentsRepository := postgres.NewAgentsRepository(dbPool)
 	agentsService := service.NewAgentsService(agentsRepository)
 
 	app := &application{
@@ -56,7 +74,7 @@ func main() {
 		agentsService:   agentsService,
 	}
 
-	err := app.serve()
+	err = app.serve()
 	if err != nil {
 		logger.Error(err.Error())
 		os.Exit(1)
@@ -115,4 +133,27 @@ func newHttpClient(logger *slog.Logger) *LoggableHttpClient {
 			},
 		},
 	}
+}
+
+func openDB(ctx context.Context, cfg config) (*pgxpool.Pool, error) {
+	config, err := pgxpool.ParseConfig(cfg.db.dsn)
+	if err != nil {
+		return nil, err
+	}
+
+	config.MaxConns = int32(cfg.db.maxOpenCons)
+	config.MinConns = int32(cfg.db.maxIdleCons)
+	config.MaxConnIdleTime = cfg.db.maxIdleTime
+
+	pool, err := pgxpool.NewWithConfig(ctx, config)
+	if err != nil {
+		return nil, err
+	}
+
+	err = pool.Ping(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return pool, nil
 }

@@ -50,7 +50,7 @@ func (app *application) getSpyCatHandler(w http.ResponseWriter, r *http.Request)
 func (app *application) createSpyCatHandler(w http.ResponseWriter, r *http.Request) {
 	var input struct {
 		Name              string  `json:"name"`
-		YearsOfExperience uint    `json:"years_of_experience"`
+		YearsOfExperience int     `json:"years_of_experience"`
 		Breed             string  `json:"breed"`
 		Salary            float64 `json:"salary"`
 		Password          string  `json:"password"`
