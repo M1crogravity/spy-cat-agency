@@ -29,22 +29,26 @@ func (app *application) recoverPanic(next http.Handler) http.Handler {
 
 func (app *application) logRequestResponse(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		rw := &responseWriter{
+			ResponseWriter: w,
+			statusCode:     http.StatusOK,
+		}
+		reqUrl := r.URL.String()
+		if strings.Contains(reqUrl, "swagger") {
+			next.ServeHTTP(rw, r)
+			return
+		}
 		received := time.Now()
 		bodyBytes, _ := io.ReadAll(r.Body)
 		r.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
 
 		app.logger.Info("<-request:",
 			"method", r.Method,
-			"url", r.URL.String(),
+			"url", reqUrl,
 			"ip", r.RemoteAddr,
 			"body", string(bodyBytes),
 			"received_at", received.Format(time.RFC3339),
 		)
-
-		rw := &responseWriter{
-			ResponseWriter: w,
-			statusCode:     http.StatusOK,
-		}
 
 		next.ServeHTTP(rw, r)
 

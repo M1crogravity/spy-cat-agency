@@ -1,6 +1,27 @@
 volumes:
   postgres_data:
+networks:
+  spy-cats:
 services:
+  api:
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - 4000:4000
+    networks:
+      - spy-cats
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    command:
+      [
+        "-db-dsn",
+        "postgres://head_agent:pa55word@postgres:5432/sca?sslmode=disable",
+        "-port",
+        "4000",
+      ]
+    profiles:
+      - production
   postgres:
     image: postgres:17.5-alpine
     restart: unless-stopped
@@ -13,3 +34,8 @@ services:
       POSTGRES_DB: sca
     volumes:
       - "postgres_data:/var/lib/postgresql/data"
+    networks:
+      - spy-cats
+    profiles:
+      - production
+      - development

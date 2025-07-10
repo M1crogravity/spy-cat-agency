@@ -5,7 +5,9 @@
 - ensure you have go installed
 
 ## To run the app:
-- run ```make```
+- run ```make``` in dockerized mode
+- or run ```make run-dev``` in local mode
+- run ```make down``` to stop the app
 
 ## To create new migration:
 - run ```make migration```

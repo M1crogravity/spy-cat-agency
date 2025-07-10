@@ -70,6 +70,8 @@ func main() {
 	flag.IntVar(&cfg.db.maxIdleCons, "db-max-idle-const", 25, "PostgreSQL max idle connections")
 	flag.DurationVar(&cfg.db.maxIdleTime, "db-max-idle-time", 15*time.Minute, "PostgreSQL max connection idle time")
 
+	flag.Parse()
+
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 	dbPool, err := openDB(context.Background(), cfg)
 	if err != nil {
