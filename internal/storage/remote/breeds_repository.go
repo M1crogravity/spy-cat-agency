@@ -83,6 +83,7 @@ func (r *BreedsRepository) requestBreeds(ctx context.Context) error {
 
 	r.cache = names
 	r.cachedAt = time.Now()
+	r.cacheSum = hash
 
 	return nil
 }
